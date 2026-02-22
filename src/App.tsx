@@ -1,5 +1,11 @@
+import EditorLayout from "./components/editor/EditorLayout";
+
 function App() {
-  return <div className="flex font-bold text-green-800">Yo!</div>;
+  return (
+    <div className="h-screen w-screen">
+      <EditorLayout />
+    </div>
+  );
 }
 
 export default App;
