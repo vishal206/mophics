@@ -14,6 +14,10 @@ export default function EditorLayout() {
       </div>
 
       <div className="h-32 border-t">Timeline (later)</div>
+
+      <div className="absolute bottom-0 right-0 text-black text-xs p-1">
+        Mophics v0.1.0 — Keyframe Recording Prototype
+      </div>
     </div>
   );
 }
