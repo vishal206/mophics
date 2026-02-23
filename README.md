@@ -1,6 +1,6 @@
 # Mophics
 
-Just came up with a cool name. A 2D motion design application. Not suire where it gonna take.
+A 2D motion design application. Not sure where it gonna take.
 
 ## Tech Used:
 

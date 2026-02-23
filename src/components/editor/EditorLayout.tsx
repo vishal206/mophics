@@ -1,3 +1,5 @@
+import StageCanvas from "./StageCanvas";
+
 export default function EditorLayout() {
   return (
     <div className="h-screen w-screen flex flex-col bg-background text-foreground">
@@ -7,7 +9,7 @@ export default function EditorLayout() {
         <div className="w-64 border-r">Layers</div>
 
         <div className="flex-1 flex items-center justify-center bg-muted">
-          Stage
+          <StageCanvas />
         </div>
 
         <div className="w-72 border-l">Inspector</div>
