@@ -1,6 +1,7 @@
 import { CanvasRenderer } from "../renderer/CanvasRenderer";
 import type { Object2D } from "../scene/Object2D";
 import { Scene } from "../scene/Scene";
+import { Timeline } from "../timeline/Timeline";
 
 export class Engine {
   private canvas: HTMLCanvasElement;
@@ -13,8 +14,12 @@ export class Engine {
   private dragOffsetX = 0;
   private dragOffsetY = 0;
 
+  private timeline: Timeline;
+  private lastTime = 0;
+
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
+    this.timeline = new Timeline();
     const ctx = canvas.getContext("2d");
     if (!ctx) {
       throw new Error("Canvas context not available");
@@ -26,12 +31,18 @@ export class Engine {
   }
 
   start() {
-    const loop = () => {
+    const loop = (time: number) => {
+      const delta = (time - this.lastTime) / 1000; // convert to seconds
+      this.lastTime = time;
+
+      this.timeline.update(delta);
+
       this.renderer.render(this.scene);
+
       this.animationFrameId = requestAnimationFrame(loop);
     };
 
-    loop();
+    requestAnimationFrame(loop);
   }
 
   stop() {
