@@ -20,4 +20,12 @@ export class Object2D {
     };
     this.color = "#4f46e5"; // nice indigo
   }
+
+  //This allows us to detect if mouse is inside rectangle.
+  containsPoint(px: number, py: number) {
+    // px - pointer x, py - pointer y
+    const { x, y, width, height } = this.transform;
+
+    return px >= x && px <= x + width && py >= y && py <= y + height;
+  }
 }

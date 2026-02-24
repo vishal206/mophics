@@ -8,4 +8,9 @@ export class Scene {
     const rect = new Object2D("rect-1");
     this.objects.push(rect);
   }
+
+  getObjectAtPosition(x: number, y: number) {
+    // Reverse order later for z-index, but fine for now
+    return this.objects.find((obj) => obj.containsPoint(x, y));
+  }
 }
