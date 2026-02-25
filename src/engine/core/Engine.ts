@@ -2,6 +2,7 @@ import { CanvasRenderer } from "../renderer/CanvasRenderer";
 import type { Object2D } from "../scene/Object2D";
 import { Scene } from "../scene/Scene";
 import { Timeline } from "../timeline/Timeline";
+import type { Keyframe } from "../timeline/Keyframe";
 
 export class Engine {
   private canvas: HTMLCanvasElement;
@@ -76,13 +77,38 @@ export class Engine {
       const mouseY = e.clientY - rect.top;
 
       this.selectedObject.transform.x = mouseX - this.dragOffsetX;
-
       this.selectedObject.transform.y = mouseY - this.dragOffsetY;
+
+      if (this.timeline.isRecording) {
+        this.recordKeyframe(this.selectedObject);
+      }
     });
 
     this.canvas.addEventListener("mouseup", () => {
       this.isDragging = false;
       this.selectedObject = null;
     });
+  }
+
+  private recordKeyframe(obj: Object2D) {
+    const frame = this.timeline.getCurrentFrame();
+
+    const lastX = obj.tracks.x[obj.tracks.x.length - 1];
+    const lastY = obj.tracks.y[obj.tracks.y.length - 1];
+
+    // Only record if value changed (avoid spam)
+    if (!lastX || lastX.value !== obj.transform.x) {
+      obj.tracks.x.push({
+        frame,
+        value: obj.transform.x,
+      });
+    }
+
+    if (!lastY || lastY.value !== obj.transform.y) {
+      obj.tracks.y.push({
+        frame,
+        value: obj.transform.y,
+      });
+    }
   }
 }

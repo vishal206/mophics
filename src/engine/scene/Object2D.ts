@@ -1,3 +1,5 @@
+import type { Keyframe } from "../timeline/Keyframe";
+
 export type Transform = {
   x: number;
   y: number;
@@ -9,6 +11,10 @@ export class Object2D {
   id: string;
   transform: Transform;
   color: string;
+  tracks: {
+    x: Keyframe[];
+    y: Keyframe[];
+  };
 
   constructor(id: string) {
     this.id = id;
@@ -19,6 +25,10 @@ export class Object2D {
       height: 80,
     };
     this.color = "#4f46e5"; // nice indigo
+    this.tracks = {
+      x: [],
+      y: [],
+    };
   }
 
   //This allows us to detect if mouse is inside rectangle.

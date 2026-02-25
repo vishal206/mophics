@@ -53,3 +53,8 @@ Provides `start()` and `stop()` methods.
 Takes care of moving the object selected.
 Uses Scene Object to find the object, this returns an bject2D object.
 Now whenaan bject selected and mouse is moved, we update the object's position.
+
+### recordKeyframe(obj: Object2D)
+
+The recordKeyframe() method is responsible for capturing the current state of an object during recording.
+When recording is active, it reads the object's current transform values and stores them as keyframes in the appropriate tracks. It ensures that keyframes are only added when values change, preventing unnecessary duplicates. Its job is to convert user movement into structured animation data.
