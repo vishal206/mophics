@@ -32,6 +32,20 @@ The Engine owns the animation lifecycle.
 
 ## Responsibilities
 
+### Loop()
+
+1. Gets the current frame from the timeline
+
+2. For each object:
+
+- - Finds the surrounding keyframes for x and y
+- - Uses the interpolator to calculate the correct in-between value
+- - Updates the object’s transform before rendering
+
+So instead of the object staying static, the loop now:
+
+> Reads stored keyframes → calculates interpolated value → updates transform → renders updated position.
+
 ### Initialize Scene
 
 Creates the Scene instance which contains all objects.
@@ -58,3 +72,9 @@ Now whenaan bject selected and mouse is moved, we update the object's position.
 
 The recordKeyframe() method is responsible for capturing the current state of an object during recording.
 When recording is active, it reads the object's current transform values and stores them as keyframes in the appropriate tracks. It ensures that keyframes are only added when values change, preventing unnecessary duplicates. Its job is to convert user movement into structured animation data.
+
+### getSurroundingKeyframes( track: { frame: number; value: number }[], currentFrame: number )
+
+This function finds the two keyframes that wrap around the current frame — one before (previous) and one after (next).
+
+These two keyframes are necessary for interpolation, because the engine needs to know the start value and end value to calculate the smooth in-between value. In short, this function determines which two keyframes should be used to compute the current animated state.

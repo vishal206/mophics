@@ -3,6 +3,7 @@ import type { Object2D } from "../scene/Object2D";
 import { Scene } from "../scene/Scene";
 import { Timeline } from "../timeline/Timeline";
 import type { Keyframe } from "../timeline/Keyframe";
+import { interpolate } from "../timeline/Interpolator";
 
 export class Engine {
   private canvas: HTMLCanvasElement;
@@ -37,6 +38,35 @@ export class Engine {
       this.lastTime = time;
 
       this.timeline.update(delta);
+
+      if (this.timeline.isPlaying && !this.timeline.isRecording) {
+        const currentFrame = this.timeline.getCurrentFrame();
+
+        this.scene.objects.forEach((obj) => {
+          const xFrames = obj.tracks.x;
+          const yFrames = obj.tracks.y;
+
+          const xKeys = this.getSurroundingKeyframes(xFrames, currentFrame);
+
+          const yKeys = this.getSurroundingKeyframes(yFrames, currentFrame);
+
+          if (xKeys) {
+            obj.transform.x = interpolate(
+              xKeys.previous,
+              xKeys.next,
+              currentFrame,
+            );
+          }
+
+          if (yKeys) {
+            obj.transform.y = interpolate(
+              yKeys.previous,
+              yKeys.next,
+              currentFrame,
+            );
+          }
+        });
+      }
 
       this.renderer.render(this.scene);
 
@@ -110,5 +140,28 @@ export class Engine {
         value: obj.transform.y,
       });
     }
+  }
+
+  private getSurroundingKeyframes(
+    track: { frame: number; value: number }[],
+    currentFrame: number,
+  ) {
+    if (track.length === 0) return null;
+
+    let previous = track[0];
+    let next = track[track.length - 1];
+
+    for (let i = 0; i < track.length; i++) {
+      if (track[i].frame <= currentFrame) {
+        previous = track[i];
+      }
+
+      if (track[i].frame >= currentFrame) {
+        next = track[i];
+        break;
+      }
+    }
+
+    return { previous, next };
   }
 }
