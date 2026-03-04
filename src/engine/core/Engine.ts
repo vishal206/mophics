@@ -2,7 +2,6 @@ import { CanvasRenderer } from "../renderer/CanvasRenderer";
 import type { Object2D } from "../scene/Object2D";
 import { Scene } from "../scene/Scene";
 import { Timeline } from "../timeline/Timeline";
-import type { Keyframe } from "../timeline/Keyframe";
 import { interpolate } from "../timeline/Interpolator";
 
 export class Engine {
@@ -30,6 +29,27 @@ export class Engine {
     this.scene = new Scene();
     this.setupMouseEvents();
     this.renderer = new CanvasRenderer(ctx, canvas.width, canvas.height);
+  }
+
+  play() {
+    this.timeline.reset();
+    this.timeline.isRecording = false;
+    this.timeline.play();
+  }
+
+  pause() {
+    this.timeline.pause();
+  }
+
+  startRecording() {
+    this.timeline.reset();
+    this.timeline.isRecording = true;
+    this.timeline.play();
+  }
+
+  stopRecording() {
+    this.timeline.isRecording = false;
+    this.timeline.pause();
   }
 
   start() {

@@ -12,9 +12,8 @@ export class Timeline {
     this.currentTime += deltaTime;
 
     // Stop at duration
-    if (this.currentTime > this.duration) {
-      this.currentTime = this.duration;
-      this.isPlaying = false;
+    if (this.currentTime >= this.duration) {
+      this.pause();
     }
   }
 

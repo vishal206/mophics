@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Engine } from "@/engine/core/Engine";
 
-export default function StageCanvas() {
+export default function StageCanvas({
+  onEngineReady,
+}: {
+  onEngineReady?: (engine: Engine) => void;
+}) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<Engine | null>(null);
 
@@ -16,6 +20,7 @@ export default function StageCanvas() {
     engine.start();
 
     engineRef.current = engine;
+    onEngineReady?.(engine);
 
     return () => {
       engine.stop();
