@@ -1,10 +1,27 @@
 import { Engine } from "@/engine/core/Engine";
+import { useEffect, useState } from "react";
 
 type ToolbarProps = {
   engine: Engine | null;
 };
 
 export default function Toolbar({ engine }: ToolbarProps) {
+  const [frame, setFrame] = useState(0);
+  const [status, setStatus] = useState<"recording" | "playing" | "paused">(
+    "paused",
+  );
+
+  useEffect(() => {
+    if (!engine) return;
+
+    const interval = setInterval(() => {
+      setFrame(engine.getCurrentFrame());
+      setStatus(engine.getStatus());
+    }, 50); // update UI every 50ms (~20fps)
+
+    return () => clearInterval(interval);
+  }, [engine]);
+
   return (
     <div className="h-14 border-b bg-zinc-900 flex items-center px-4 gap-3 text-white">
       <button
@@ -34,6 +51,10 @@ export default function Toolbar({ engine }: ToolbarProps) {
       >
         ⏸ Pause
       </button>
+
+      <div className="ml-6 text-xs opacity-70">Frame: {frame}</div>
+
+      <div className="ml-6 text-sm opacity-70">Status: {status}</div>
     </div>
   );
 }

@@ -32,8 +32,9 @@ export class Engine {
   }
 
   play() {
+    if (this.timeline.isRecording) return;
+
     this.timeline.reset();
-    this.timeline.isRecording = false;
     this.timeline.play();
   }
 
@@ -42,9 +43,17 @@ export class Engine {
   }
 
   startRecording() {
+    if (this.timeline.isPlaying) {
+      this.timeline.pause();
+    }
     this.timeline.reset();
     this.timeline.isRecording = true;
     this.timeline.play();
+
+    // 🔥 Immediately record starting position
+    this.scene.objects.forEach((obj) => {
+      this.recordKeyframe(obj);
+    });
   }
 
   stopRecording() {
@@ -52,6 +61,14 @@ export class Engine {
     this.timeline.pause();
   }
 
+  getCurrentFrame() {
+    return this.timeline.getCurrentFrame();
+  }
+  getStatus(): "recording" | "playing" | "paused" {
+    if (this.timeline.isRecording) return "recording";
+    if (this.timeline.isPlaying) return "playing";
+    return "paused";
+  }
   start() {
     const loop = (time: number) => {
       const delta = (time - this.lastTime) / 1000; // convert to seconds
@@ -71,19 +88,27 @@ export class Engine {
           const yKeys = this.getSurroundingKeyframes(yFrames, currentFrame);
 
           if (xKeys) {
-            obj.transform.x = interpolate(
-              xKeys.previous,
-              xKeys.next,
-              currentFrame,
-            );
+            if (currentFrame >= xKeys.next.frame) {
+              obj.transform.x = xKeys.next.value;
+            } else {
+              obj.transform.x = interpolate(
+                xKeys.previous,
+                xKeys.next,
+                currentFrame,
+              );
+            }
           }
 
           if (yKeys) {
-            obj.transform.y = interpolate(
-              yKeys.previous,
-              yKeys.next,
-              currentFrame,
-            );
+            if (currentFrame >= yKeys.next.frame) {
+              obj.transform.y = yKeys.next.value;
+            } else {
+              obj.transform.y = interpolate(
+                yKeys.previous,
+                yKeys.next,
+                currentFrame,
+              );
+            }
           }
         });
       }
